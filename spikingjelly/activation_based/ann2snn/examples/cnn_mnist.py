@@ -26,7 +26,6 @@ class hyperparameters:
 def main(eval_fn,
         backbone=None, 
         head=None, 
-        mode_sel=3,
         conversion = None, 
         download_dataset=False,
         device = 'cuda',
@@ -74,7 +73,7 @@ def main(eval_fn,
 
     # if head is none, test the backbone directly
     if head is not None:
-        val_model = conversion(mode_sel,head, train_data_loader)
+        val_model = conversion(head, train_data_loader)
     else:
         val_model = backbone
 
@@ -89,27 +88,14 @@ def count_spikes_hook(module, input, output):
 def count_macs_hook(module, input, output):
     print(module)
 
-def conversion_job(mode_sel, head, train_data_loader):
+def conversion_job(head, train_data_loader):
     print('---------------------------------------------')
-    match mode_sel:
-        case 0:
-            print('Converting using max(activation) as scales')
-            model_converter = ann2snn.Converter(mode='max', dataloader=train_data_loader)
-        case 1:
-            print('Converting using 99.9% max(activation) as scales')
-            model_converter = ann2snn.Converter(mode='99.9%', dataloader=train_data_loader)
-        case 2:
-            print('Converting using 1/2 max(activation) as scales')
-            model_converter = ann2snn.Converter(mode=1.0 / 2, dataloader=train_data_loader)
-        case 3:
-            print('Converting using 1/4 max(activation) as scales')
-            model_converter = ann2snn.Converter(mode=1.0 / 4, dataloader=train_data_loader)
-        case _:
-            print(f'Invalid mode selected: {mode_sel}')
+    print('Converting using 1/4 max(activation) as scales')
+
     # model_converter = ann2snn.Converter(mode='max', dataloader=train_data_loader)
     # model_converter = ann2snn.Converter(mode='99.9%', dataloader=train_data_loader)
     # model_converter = ann2snn.Converter(mode=1.0 / 2, dataloader=train_data_loader)
-    #model_converter = ann2snn.Converter(mode=1.0 / 4, dataloader=train_data_loader)
+    model_converter = ann2snn.Converter(mode=1.0 / 4, dataloader=train_data_loader)
     return model_converter(head)
 
 def val(net, device, train_data_loader, test_data_loader, T=None):
