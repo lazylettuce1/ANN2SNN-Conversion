@@ -1,0 +1,19 @@
+# --- Python Virtual Environments ---
+.venv/
+
+# --- Build, Distribution, & Metadata ---
+build/
+dist/
+*.egg-info/
+spikingjelly.egg-info/
+
+# --- Jupyter Notebook Artifacts ---
+.ipynb_checkpoints/
+
+# --- Machine Learning Models & Weights ---
+#*.pth
+
+# --- OS & IDE Metadata (Optional but recommended) ---
+.DS_Store
+.vscode/
+.claude/
